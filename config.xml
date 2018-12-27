@@ -1,0 +1,30 @@
+<org.aver.avHelper.vo.Config>
+  <tempMediaDir>D:\教程\新建文件夹</tempMediaDir>
+  <serverMediaDir class="linked-list">
+    <org.aver.avHelper.vo.Address>
+      <name>影片目录</name>
+      <url>D:\教程\新建文件夹 (2)</url>
+    </org.aver.avHelper.vo.Address>
+    <org.aver.avHelper.vo.Address>
+      <name>预览目录</name>
+      <url>D:\教程\新建文件夹 (3)</url>
+    </org.aver.avHelper.vo.Address>
+  </serverMediaDir>
+  <categoryUrl class="linked-list">
+    <org.aver.avHelper.vo.Address>
+      <name>工藤美紗</name>
+      <url>https://www.javbus.com/star/6qd</url>
+    </org.aver.avHelper.vo.Address>
+  </categoryUrl>
+  <threadSize>30</threadSize>
+  <downloadFanart>true</downloadFanart>
+  <socksHost>127.0.0.1</socksHost>
+  <socksPort>1080</socksPort>
+  <socksName></socksName>
+  <socksPwd></socksPwd>
+  <startDate></startDate>
+  <endDate></endDate>
+  <genreExclude class="linked-list">
+    <string>合集</string>
+  </genreExclude>
+</org.aver.avHelper.vo.Config>

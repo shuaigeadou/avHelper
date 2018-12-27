@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>avHelper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Bootstrap -->
+<link href="/bootstrap.min.css" rel="stylesheet" media="screen" />
+<link href="/bootstrap-datetimepicker.min.css" rel="stylesheet"
+	media="screen" />
+<script src="/jquery.min.js"></script>
+<script src="/jquery.serializejson.js"></script>
+<script src="/extendJQuery.js"></script>
+<script src="/bootstrap.min.js"></script>
+<script src="/bootstrap-datetimepicker.min.js"></script>
+<script src="/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="/avHelperFunc.js"></script>
+<style type="text/css">
+h4 {
+	display: inline-block;
+	margin: 8px;
+}
+th,td{
+	text-align: center !important;
+    vertical-align: middle !important;
+}
+</style>
+</head>
+<body>
+	<h1 class="text-center">avHelper</h1>
+	<hr />
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="form-group">
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">临时存放电影目录</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control tempDir" placeholder="粘贴目录"
+						disabled="disabled" />
+				</div>
+				<div class="col-md-4 column">
+					<button type="button"
+						class="btn btn-default btn-primary lockTempDir">锁定临时目录</button>
+					<button type="button"
+						class="btn btn-default btn-warning editTempDir">编辑</button>
+					<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="临时目录" data-trigger="hover"
+						data-content="临时目录：用来暂时存放电影的目录，生成改名配置、下载电影信息、修改文件名等等都是针对这个文件夹的视频。
+						移动电影到本目录：根据过滤条件，将临时目录的电影移动到本目录，并生成info、下载预览图等。
+						移动到临时目录：将本目录下所有大文件移动到临时目录。">
+						</span>
+				</div>
+			</div>
+		</div>
+
+		<div id="mediaDirs"></div>
+		<div id="mediaDirsTemplate" style="display: none;"
+			class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="form-group">
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;" class="name">模版</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control dirOrUrl"
+						disabled="disabled" placeholder="粘贴目录" />
+				</div>
+				<div class="col-md-4 column">
+					<button type="button" class="btn btn-default btn-primary moveToThis">移动电影到本目录</button>
+					<button type="button" class="btn btn-default btn-warning moveToTemp">移动到临时目录</button>
+					<button type="button" class="btn btn-default btn-danger deleteDir">删除</button>
+				</div>
+			</div>
+		</div>
+		<div id="catogaryUrl"></div>
+		<div id="catogaryUrlTepmlate" style="display: none;"
+			class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="form-group">
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;" class="name">模版</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control dirOrUrl"
+						disabled="disabled" placeholder="粘贴目录" />
+				</div>
+				<div class="col-md-4 column">
+					<button type="button" class="btn btn-default btn-primary generatePseudoVideo"
+						>生成伪装视频到临时目录</button>
+					<button type="button" class="btn btn-default btn-danger deleteUrl">删除</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="form-group">
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">删除影片信息目录</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+				<ul id="selectTemplate" class="dropdown-menu" style="display: none;">
+					<li><a href="javascript:;">下拉模版</a></li>
+				</ul>
+					从
+					<div class="btn-group deleteDir1">
+						<button class="btn btn-default" disabled="disabled"></button>
+						<button data-toggle="dropdown"
+							class="btn btn-default dropdown-toggle">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu"></ul>
+					</div>
+					中删除
+					<div class="btn-group deleteDir2">
+						<button class="btn btn-default" disabled="disabled"></button>
+						<button data-toggle="dropdown"
+							class="btn btn-default dropdown-toggle">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu"></ul>
+					</div>
+					中已有的电影目录
+				</div>
+				<div class="col-md-4 column">
+					<button type="button" class="btn btn-default btn-primary compareDir">删除目录</button>
+					<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="删除目录" data-trigger="hover"
+						data-content="删除用来预览的电影文件夹。"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="col-md-2 column">
+				<input type="text" class="form-control newName"
+					placeholder="添加新名称（不能重）" />
+			</div>
+			<div class="col-sm-5">
+				<input type="text" class="form-control newUrl"
+					placeholder="添加新路径或新地址" />
+			</div>
+			<div class="col-md-4 column">
+				<button type="button"
+					class="btn btn-default btn-primary addMediaDir">添加目录</button>
+				<button type="button"
+					class="btn btn-default btn-primary addCategoryUrl">添加地址</button>
+				<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="添加目录/地址" data-trigger="hover"
+						data-content="
+						目录：用来存放下载好的info信息、预览图和电影，里层目录结构是演员名-编号。
+						地址：演员地址或是分类地址，从地址可以生成伪视频，之后下载预览图进行预览管理。"></span>
+			</div>
+		</div>
+
+		<hr />
+		<form id="config">
+			<div class="row clearfix">
+				<div class="col-md-1 column"></div>
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">线程数</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<input name="threadSize" type="number" class="form-control" placeholder="线程数" />
+				</div>
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">是否下载预览图</a></li>
+					</ul>
+				</div>
+				<div class="col-md-1 column isDownloadArt">
+					<div class="btn-group">
+						<button class="btn btn-default" disabled="disabled">是</button>
+						<button data-toggle="dropdown"
+							class="btn btn-default dropdown-toggle">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li><a href="javascript:;">是</a></li>
+							<li><a href="javascript:;">否</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-4 column">
+					<button type="button"
+						class="btn  btn-default btn-primary lockConfig">锁定选项</button>
+					<button type="button"
+						class="btn  btn-default btn-warning editConfig">编辑</button>
+					<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="下载配置和过滤配置" data-trigger="hover"
+						data-content="下载配置：下载图片的线程数，访问AVbus的socks代理配置。
+						过滤配置：移动电影和下载预览图时的条件过滤。"></span>
+				</div>
+			</div>
+
+			<div class="row clearfix">
+				<div class="col-md-1 column"></div>
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">socks代理信息</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<input type="text" name="socksHost" class="form-control" placeholder="ip地址" />
+				</div>
+				<div class="col-sm-2">
+					<input type="number" name="socksPort" class="form-control" placeholder="端口" />
+				</div>
+				<div class="col-sm-2">
+					<input type="text" name="socksName" class="form-control" placeholder="用户名（可选）" />
+				</div>
+				<div class="col-sm-2">
+					<input type="text" name="socksPwd" class="form-control" placeholder="密码（可选）" />
+				</div>
+			</div>
+
+			<div class="row clearfix">
+				<div class="col-md-1 column"></div>
+				<div class="col-sm-2">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">最大演员数</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<input name="maxActorNum" type="number" class="form-control" placeholder="最大演员数" />
+				</div>
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">上映日期范围</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<input name="startDate" type="text" class="form-control datetimepicker"
+						placeholder="开始时间" />
+				</div>
+				<div class="col-sm-2">
+					<input name="endDate" type="text" class="form-control datetimepicker"
+						placeholder="结束时间" />
+				</div>
+			</div>
+
+			<div class="row clearfix">
+				<div class="col-md-1 column"></div>
+				<div class="col-sm-2">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">类别排除</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control newType" placeholder="类别排除" />
+				</div>
+				<div class="col-md-4 column">
+					<button type="button" class="btn  btn-default btn-primary addType">添加</button>
+				</div>
+			</div>
+
+			<div class="row clearfix">
+				<div class="col-md-1 column"></div>
+				<div class="col-md-2 column"></div>
+				<div class="col-sm-7" id="excludeType"></div>
+			</div>
+			<h4 id="h4Template" style="display: none;">
+				<span class="label label-default deleteType">标签</span>
+			</h4>
+		</form>
+		<hr />
+
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="col-md-2 column">
+				<ul class="nav nav-pills">
+					<li><a href="javascript:;">改名选项</a></li>
+				</ul>
+			</div>
+			<div class="col-sm-3">
+				<div class="btn-group usedRules">
+					<button class="btn btn-default" disabled="disabled">使用规则生成新文件名</button>
+					<button data-toggle="dropdown"
+						class="btn btn-default dropdown-toggle">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="javascript:;">使用规则生成新文件名</a></li>
+						<li><a href="javascript:;">使用原有文件名</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<button type="button" class="btn  btn-default btn-primary generateConfig">生成改名配置</button>
+				<button type="button" class="btn  btn-default btn-primary getMovieMessage">下载电影信息</button>
+				<button type="button" class="btn  btn-default btn-primary reName">修改文件名</button>
+				<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="临时目录" data-trigger="hover"
+						data-content="生成改名配置：使用规则或是使用原有文件名生成新文件名。规则是连续的字母数字。
+						下载电影信息：下载生成info需要的各类信息，如导演、演员、分类、发行日期等等。
+						修改文件名：修改成字母加数字形式的编号。"></span>
+			</div>
+		</div>
+
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="col-md-10 column">
+				<table id="movieList" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>原名称</th>
+							<th>新名称</th>
+							<th>影片地址</th>
+							<th>状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="success" style="display: none;">
+							<td>1</td>
+							<td>123</td>
+							<td><input type="text" class="form-control"
+								placeholder="粘贴目录" /></td>
+							<td>Default</td>
+							<td>成功</td>
+						</tr>
+						<tr class="danger" style="display: none;">
+							<td>1</td>
+							<td>123</td>
+							<td><input type="text" class="form-control"
+								placeholder="粘贴目录" /></td>
+							<td>Default</td>
+							<td>失败</td>
+						</tr>
+					</tbody>
+					<tr id="movieTemp" class="" style="display: none;">
+						<td class="no"></td>
+						<td class="oriFileName"></td>
+						<td class="newFileName"><input type="text" class="form-control"
+							placeholder="新文件名" /></td>
+						<td class="movieWebSite"></td>
+						<td class="msgStatus"></td>
+					</tr>
+				</table>
+				
+			</div>
+			<div class="col-md-1 column"></div>
+		</div>
+	</div>
+
+</body>
+</html>
