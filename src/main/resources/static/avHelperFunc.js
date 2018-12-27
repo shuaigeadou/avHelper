@@ -339,7 +339,7 @@ $(function() {
 	
 	/*下载电影信息*/
 	$('.getMovieMessage').on('click', function(){
-		synchronizeNewName();
+		//synchronizeNewName();
 		$.ajax({
 			type : 'POST',
 			contentType : "application/json",
@@ -360,6 +360,10 @@ $(function() {
 	/*填充表格，根据指定字段判断状态是否成功*/
 	function addToTable(data, field){
 		var tbody = $('#movieList tbody:eq(0)').empty();
+		addToTable2(data, field);
+	}
+	function addToTable2(data, field){
+		var tbody = $('#movieList tbody:eq(0)');
 		var movieTemp = $('#movieTemp');
 		$(data).each(function(index, ele){
 			var temp = movieTemp.clone(true).removeAttr('id').show();
@@ -377,12 +381,17 @@ $(function() {
 				temp.find('.msgStatus').text('成功');
 			}
 			tbody.append(temp);
+			
+			if(ele.childrenMovies != null && ele.childrenMovies.length > 0){
+				addToTable2(ele.childrenMovies, 'newName');
+			}
 		});
 	}
 	
+	
 	/*修改文件名*/
 	$('.reName').on('click', function(){
-		synchronizeNewName();
+		//synchronizeNewName();
 		$.ajax({
 			type : 'POST',
 			contentType : "application/json",
