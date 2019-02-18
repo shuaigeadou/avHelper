@@ -518,4 +518,22 @@ $(function() {
 		});
 	});
 	
+	/*生成伪装视频到临时目录*/
+	$('.generateAllPseudoVideo').on('click', function(){
+		$.ajax({
+			type : 'POST',
+			contentType : "text/plain",
+			url : '/ajax/generateAllPseudoVideo',
+			cache : false,
+			timeout : 3000,
+			async : false,
+			success : function(data) {
+				alert('完成');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert(XMLHttpRequest.responseJSON.message);
+            }
+		});
+	});
+	
 });

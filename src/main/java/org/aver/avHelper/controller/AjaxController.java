@@ -2,9 +2,13 @@ package org.aver.avHelper.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aver.avHelper.service.MainService;
+import org.aver.avHelper.service.impl.GeneratePseudoVideoTask;
 import org.aver.avHelper.vo.Address;
 import org.aver.avHelper.vo.Config;
 import org.aver.avHelper.vo.ConfigStatic;
@@ -170,6 +174,28 @@ public class AjaxController {
 			if(StringUtils.equals(urlName, address.getName())){
 				mainService.generatePseudoVideo(address.getUrl());
 			}
+		}
+	}
+	
+	@PostMapping("/generateAllPseudoVideo")
+	public void generateAllPseudoVideo() throws IOException, Exception{
+		List<Address> categoryUrl = ConfigStatic.config.getCategoryUrl();
+		
+		// 多线程代码
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(
+				ConfigStatic.config.getThreadSize(),ConfigStatic.config.getThreadSize(), 60000,
+				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		GeneratePseudoVideoTask generatePseudoVideoTask = null;
+		for (Address address : categoryUrl) {
+			generatePseudoVideoTask = new GeneratePseudoVideoTask(mainService, address.getUrl());
+			executor.execute(generatePseudoVideoTask);
+		}
+		executor.shutdown();
+		while (true) {
+			if (executor.isTerminated()) {
+				break;
+			}
+			Thread.sleep(1000);
 		}
 	}
 	

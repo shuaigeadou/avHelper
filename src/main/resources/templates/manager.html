@@ -274,7 +274,7 @@ th,td{
 			<div class="row clearfix">
 				<div class="col-md-1 column"></div>
 				<div class="col-md-2 column"></div>
-				<div class="col-sm-7" id="excludeType"></div>
+				<div class="col-md-7" id="excludeType"></div>
 			</div>
 			<h4 id="h4Template" style="display: none;">
 				<span class="label label-default deleteType">标签</span>
@@ -289,7 +289,7 @@ th,td{
 					<li><a href="javascript:;">改名选项</a></li>
 				</ul>
 			</div>
-			<div class="col-sm-3">
+			<div class="col-md-3">
 				<div class="btn-group usedRules">
 					<button class="btn btn-default" disabled="disabled">使用规则生成新文件名</button>
 					<button data-toggle="dropdown"
@@ -302,16 +302,19 @@ th,td{
 					</ul>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<button type="button" class="btn  btn-default btn-primary generateConfig">生成改名配置</button>
-				<button type="button" class="btn  btn-default btn-primary getMovieMessage">下载电影信息</button>
-				<button type="button" class="btn  btn-default btn-primary reName">修改文件名</button>
+			<div class="col-md-6">
+				<button type="button" class="btn btn-default btn-primary generateConfig">生成改名配置</button>
+				<button type="button" class="btn btn-default btn-primary getMovieMessage">下载电影信息</button>
+				<button type="button" class="btn btn-default btn-primary reName">修改文件名</button>
+				<button type="button" class="btn btn-default btn-primary generateAllPseudoVideo"
+					>生成伪装视频到临时目录</button>
 				<span class="glyphicon glyphicon-question-sign popoverHelp"
 						data-container="body" data-toggle="popover" data-placement="left"
 						title="临时目录" data-trigger="hover"
 						data-content="生成改名配置：使用规则或是使用原有文件名生成新文件名。规则是连续的字母数字。
 						下载电影信息：下载生成info需要的各类信息，如导演、演员、分类、发行日期等等。
-						修改文件名：修改成字母加数字形式的编号。"></span>
+						修改文件名：修改成字母加数字形式的编号。
+						生成伪装视频到临时目录：生成所有地址的伪装视频到临时目录。"></span>
 			</div>
 		</div>
 
