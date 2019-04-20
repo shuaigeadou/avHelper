@@ -1,1 +1,1 @@
-java -jar avHelper-2.0.0.jar
+java -jar avHelper-2.2.0.jar

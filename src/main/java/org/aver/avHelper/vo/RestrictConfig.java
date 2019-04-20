@@ -20,6 +20,8 @@ public class RestrictConfig {
 	private String startDate;
 	/** 上映结束日期 */
 	private String endDate;
+	/** 生成伪装视频下载的页数 */
+	private Integer maxDownloadNum;
 	
 	public int getThreadSize() {
 		return threadSize;
@@ -74,6 +76,12 @@ public class RestrictConfig {
 	}
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+	public Integer getMaxDownloadNum() {
+		return maxDownloadNum;
+	}
+	public void setMaxDownloadNum(Integer maxDownloadNum) {
+		this.maxDownloadNum = maxDownloadNum;
 	}
 	
 }

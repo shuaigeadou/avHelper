@@ -316,6 +316,7 @@ public class MainServiceImpl implements MainService {
 		properties.put("Cookie", "existmag=all");
 		int i = 1;
 		while (true) {
+			if (config.getMaxDownloadNum() !=null && i > config.getMaxDownloadNum()) break;
 			Document document = HtmlDownload.getDocBySite(urlName + "/" + i, properties);
 			Elements imgEles = document.select("#waterfall a.movie-box");
 			if (imgEles.size() == 0) break;

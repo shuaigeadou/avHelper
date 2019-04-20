@@ -30,6 +30,8 @@ public class Config {
 	private String endDate;
 	/** 分类排除 */
 	private List<String> genreExclude = new LinkedList<String>();
+	/** 生成伪装视频下载的页数 */
+	private Integer maxDownloadNum;
 
 	public String getTempMediaDir() {
 		return tempMediaDir;
@@ -133,6 +135,14 @@ public class Config {
 
 	public void setGenreExclude(List<String> genreExclude) {
 		this.genreExclude = genreExclude;
+	}
+
+	public Integer getMaxDownloadNum() {
+		return maxDownloadNum;
+	}
+
+	public void setMaxDownloadNum(Integer maxDownloadNum) {
+		this.maxDownloadNum = maxDownloadNum;
 	}
 
 }
