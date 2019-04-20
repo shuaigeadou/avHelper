@@ -9,6 +9,6 @@
 
 下载：
 
-[avHelper-2.1.0](https://github.com/shuaigeadou/avHelper/blob/master/%E7%89%88%E6%9C%AC/avHelper-2.2.0.zip?raw=true)
+[avHelper-2.2.0](https://github.com/shuaigeadou/avHelper/blob/master/%E7%89%88%E6%9C%AC/avHelper-2.2.0.zip?raw=true)
 
 [教程](https://github.com/shuaigeadou/avHelper/blob/master/%E6%95%99%E7%A8%8B%EF%BC%88%E5%90%AB%E6%9C%89%E6%88%90%E4%BA%BA%E7%94%BB%E9%9D%A2%EF%BC%8C%E8%AF%B7%E7%A1%AE%E8%AE%A4%E5%B7%B2%E6%BB%A118%E5%B2%81%EF%BC%89.zip?raw=true)
