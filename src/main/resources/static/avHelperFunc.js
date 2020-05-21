@@ -113,6 +113,30 @@ $(function() {
 		$('.tempDir').removeAttr("disabled");
 	});
 
+	/* 增加马甲 */
+	$('.addActorName').on('click', function() {
+		if($.trim($('.newActorName').val()) == ''){
+			alert('演员名不能为空!');
+			return;
+		}
+		
+		$.ajax({
+			type : 'POST',
+			contentType : "text/plain",
+			url : "/ajax/addActorName",
+			data : $.trim($('.newActorName').val()),
+			cache : false,
+			timeout : 3000,
+			async : false,
+			success : function(data) {
+				alert('成功');
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert(XMLHttpRequest.responseJSON.message);
+            }
+		});
+	});
+	
 	/* 添加目录或添加地址 */
 	$('.addMediaDir,.addCategoryUrl').on('click',function() {
 		var newName = $.trim($('.newName').val());
@@ -304,17 +328,20 @@ $(function() {
 	
 	/** 生成改名配置*/
 	$('.generateConfig').on('click', function() {
-		var usedRules;
-		if($('.usedRules button:eq(0)').text() == '使用规则生成新文件名'){
-			usedRules = 'true';
+		var usedRule;
+		if($('.usedRules button:eq(0)').text() == '使用规则1生成新文件名（字母-数字）'){
+			usedRule = 'rule1';
+		}else if($('.usedRules button:eq(0)').text() == '使用规则2生成新文件名（数字-字母-数字）'){
+			usedRule = 'rule2';
 		}else{
-			usedRules = 'false';
+			usedRule = 'norule';
 		}
+		var usedSite = $('.usedSites button:eq(0)').text();
 		$.ajax({
 			type : 'POST',
-			contentType : "text/plain",
+			contentType : "application/x-www-form-urlencoded",
 			url : '/ajax/generateConfig',
-			data : usedRules,
+			data : 'usedRule='+usedRule+'&usedSite='+usedSite,
 			cache : false,
 			timeout : 3000,
 			async : false,

@@ -5,19 +5,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang3.StringUtils;
 import org.aver.avHelper.utils.HtmlDownload;
 import org.aver.avHelper.vo.Movie;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class GetMovieMsgTask implements Runnable {
+public class GetJavBusMovieMsgTask implements Runnable {
 	private Movie movie;
 	private CopyOnWriteArrayList<Movie> movieList;
 	private CopyOnWriteArrayList<Movie> errorMovieList;
 
-	public GetMovieMsgTask(Movie movie, CopyOnWriteArrayList<Movie> movieList,
+	public GetJavBusMovieMsgTask(Movie movie, CopyOnWriteArrayList<Movie> movieList,
 			CopyOnWriteArrayList<Movie> errorMovieList) {
 		this.movie = movie;
 		this.movieList = movieList;
@@ -26,12 +25,6 @@ public class GetMovieMsgTask implements Runnable {
 
 	@Override
 	public void run() {
-		// 没有网址的不处理
-		if (StringUtils.isBlank(movie.getWebSite())) {
-			errorMovieList.add(movie);
-			return;
-		}
-
 		Document document = HtmlDownload.getDocBySite(movie.getWebSite(), null);
 		Elements containerEles = document.select(".container");
 		
@@ -86,6 +79,7 @@ public class GetMovieMsgTask implements Runnable {
 		String posterPicSite = containerEles.select(".screencap a").attr("href");
 		movie.setPosterPicSite(posterPicSite);
 		movie.setSmallPosterPicSite(posterPicSite.replace("cover", "thumb").replace("_b", ""));
+		movie.setPosterNeedCut(true);
 		
 		//影片截图
 		Elements samplePicsEles = containerEles.select("#sample-waterfall a");

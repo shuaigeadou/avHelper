@@ -45,6 +45,9 @@ public class Movie {
 	/** 海报图片地址 */
 	String posterPicSite;
 
+	/** 下载的海报是否需要裁剪 */
+	Boolean posterNeedCut;
+	
 	/** 小海报图片地址 */
 	String smallPosterPicSite;
 
@@ -180,4 +183,13 @@ public class Movie {
 	public void setChildrenMovies(List<Movie> childrenMovies) {
 		this.childrenMovies = childrenMovies;
 	}
+
+	public Boolean getPosterNeedCut() {
+		return posterNeedCut;
+	}
+
+	public void setPosterNeedCut(Boolean posterNeedCut) {
+		this.posterNeedCut = posterNeedCut;
+	}
+	
 }

@@ -6,13 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
 
 public class ConfigStatic {
 	
-	/** 影片信息下载地址 */
+	/** javbus影片信息下载地址 */
 	public static final String javBusSite = "https://www.javbus.com/";
+	/** mgstage影片信息下载地址 */
+	public static final String mgstageSite = "https://www.mgstage.com/product/product_detail/";
 	/** 保存影片信息的目录 */
 	public static final String tempRootPath = "./temp/";
 	/** 影片信息XML文件 */
@@ -23,11 +26,15 @@ public class ConfigStatic {
 	public static final String dateFormatString = "yyyy-MM-dd";
 	/** 可变配置路径 */
 	public static final String configPath = "./config.xml";
+	/** javbus类别对照*/
+	public static Map<String, String> languageDict;
+	public static final String languageDictPath = "./javbus类别对照.xml";
 	/** 可变配置 */
 	public static Config config;
 	
 	static{
 		config = readConfig();
+		readLanguageDict();
 	}
 	
 	/**
@@ -64,6 +71,25 @@ public class ConfigStatic {
 			e.printStackTrace();
 		}
 		return config;
+	}
+	
+	/**
+	 * 读取对照
+	 * @return
+	 */
+	public static void readLanguageDict(){
+		File file = new File(languageDictPath);
+		if(!file.exists()) {
+			languageDict = null;
+			return;
+		}
+		
+		XStream xStream = new XStream();
+		try {
+			languageDict = (Map<String, String>) xStream.fromXML(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {

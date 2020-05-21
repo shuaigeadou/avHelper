@@ -35,7 +35,7 @@ th,td{
 			<div class="form-group">
 				<div class="col-md-2 column">
 					<ul class="nav nav-pills">
-						<li><a href="javascript:;">临时存放电影目录</a></li>
+						<li><a href="javascript:;">临时目录</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-5">
@@ -53,6 +53,29 @@ th,td{
 						data-content="临时目录：用来暂时存放电影的目录，生成改名配置、下载电影信息、修改文件名等等都是针对这个文件夹的视频。
 						移动电影到本目录：根据过滤条件，将临时目录的电影移动到本目录，并生成info、下载预览图等。
 						移动到临时目录：将本目录下所有大文件移动到临时目录。">
+						</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row clearfix">
+			<div class="col-md-1 column"></div>
+			<div class="form-group">
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li><a href="javascript:;">增加马甲</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control newActorName" placeholder="演员名"/>
+				</div>
+				<div class="col-md-4 column">
+					<button type="button"
+						class="btn btn-default btn-primary addActorName">加入</button>
+					<span class="glyphicon glyphicon-question-sign popoverHelp"
+						data-container="body" data-toggle="popover" data-placement="left"
+						title="增加马甲" data-trigger="hover"
+						data-content="将临时目录及子目录中的nfo文件里，增加演员名。因为一个演员可能又N多个马甲，乱七八糟的。">
 						</span>
 				</div>
 			</div>
@@ -303,21 +326,21 @@ th,td{
 		<hr />
 
 		<div class="row clearfix">
-			<div class="col-md-1 column"></div>
 			<div class="col-md-2 column">
 				<ul class="nav nav-pills">
 					<li><a href="javascript:;">改名选项</a></li>
 				</ul>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<div class="btn-group usedRules">
-					<button class="btn btn-default" disabled="disabled">使用规则生成新文件名</button>
+					<button class="btn btn-default" disabled="disabled">使用规则1生成新文件名（字母-数字）</button>
 					<button data-toggle="dropdown"
 						class="btn btn-default dropdown-toggle">
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href="javascript:;">使用规则生成新文件名</a></li>
+						<li><a href="javascript:;">使用规则1生成新文件名（字母-数字）</a></li>
+						<li><a href="javascript:;">使用规则2生成新文件名（数字-字母-数字）</a></li>
 						<li><a href="javascript:;">使用原有文件名</a></li>
 					</ul>
 				</div>
@@ -337,10 +360,29 @@ th,td{
 						生成伪装视频到临时目录：生成所有地址的伪装视频到临时目录。"></span>
 			</div>
 		</div>
+		<div class="row clearfix">
+			<div class="col-md-2 column">
+				<ul class="nav nav-pills">
+					<li><a href="javascript:;">刮削网站</a></li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<div class="btn-group usedSites">
+					<button class="btn btn-default" disabled="disabled">javbus</button>
+					<button data-toggle="dropdown"
+						class="btn btn-default dropdown-toggle">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="javascript:;">javbus</a></li>
+						<li><a href="javascript:;">mgstage</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
 		<div class="row clearfix">
-			<div class="col-md-1 column"></div>
-			<div class="col-md-10 column">
+			<div class="col-md-12 column">
 				<table id="movieList" class="table table-bordered table-hover">
 					<thead>
 						<tr>
@@ -380,7 +422,6 @@ th,td{
 				</table>
 				
 			</div>
-			<div class="col-md-1 column"></div>
 		</div>
 	</div>
 

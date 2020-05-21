@@ -1,5 +1,6 @@
 package org.aver.avHelper.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -10,18 +11,26 @@ import org.springframework.stereotype.Service;
 public interface MainService {
 
 	/**
+	 * 增加演员名到nfo中
+	 * @param rootPath
+	 * @param actorName
+	 * @throws Exception 
+	 */
+	public void addActorToNfo(File rootPath, String actorName) throws Exception;
+	
+	/**
 	 * 用原有文件名生成改名配置
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Movie> generateConfig() throws IOException;
+	public List<Movie> generateConfig(String usedSite) throws IOException;
 	
 	/**
 	 * 根据规则生成改名配置
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Movie> generateRenameConfig() throws IOException;
+	public List<Movie> generateRenameConfig(String usedRule, String usedSite) throws IOException;
 	
 	/**
 	 * 将前台新文件名同步到后台

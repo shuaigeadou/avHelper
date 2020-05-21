@@ -1,5 +1,6 @@
 package org.aver.avHelper.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -45,6 +46,11 @@ public class AjaxController {
 		ConfigStatic.saveConfig();
 	}
 
+	@PostMapping("/addActorName")
+	public void addActorName(@RequestBody String actorName) throws Exception {
+		mainService.addActorToNfo(new File(ConfigStatic.config.getTempMediaDir()), actorName.trim());
+	}
+	
 	@PostMapping("/addMedirDir")
 	public void addMedirDir(@RequestBody Address medirDir) {
 		ConfigStatic.config.getServerMediaDir().add(medirDir);
@@ -100,11 +106,11 @@ public class AjaxController {
 	}
 	
 	@PostMapping("/generateConfig")
-	public List<Movie> generateConfig(@RequestBody String usedRules) throws IOException {
-		if(StringUtils.equalsIgnoreCase("true", usedRules)){
-			return mainService.generateRenameConfig();
+	public List<Movie> generateConfig(String usedRule, String usedSite) throws IOException {
+		if(StringUtils.equalsIgnoreCase("norule", usedRule)){
+			return mainService.generateConfig(usedSite);
 		}else{
-			return mainService.generateConfig();
+			return mainService.generateRenameConfig(usedRule, usedSite);
 		}
 	}
 	

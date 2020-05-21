@@ -1,7 +1,9 @@
 package org.aver.avHelper.service.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +23,9 @@ import org.aver.avHelper.utils.XmlHandler;
 import org.aver.avHelper.vo.Config;
 import org.aver.avHelper.vo.ConfigStatic;
 import org.aver.avHelper.vo.Movie;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,7 +35,44 @@ import org.springframework.stereotype.Component;
 public class MainServiceImpl implements MainService {
 	
 	@Override
-	public List<Movie> generateConfig() throws IOException {
+	public void addActorToNfo(File rootPath, String actorName) throws Exception {
+		//1.拿取解析器Sample Api Xml
+		SAXReader sax = new SAXReader();
+		for (File file : rootPath.listFiles()) {
+			if (file.isDirectory()) {
+				addActorToNfo(file, actorName);
+			}else if (StringUtils.endsWithIgnoreCase(file.getName(), ".nfo")) {
+				//2.读取指定 的xml文档。将其封装在document对象中
+				org.dom4j.Document document = sax.read(file);
+				//3.拿取根元素<movie>
+				org.dom4j.Element rootEle = document.getRootElement();
+				//4.创建子元素
+				org.dom4j.Element actEle = rootEle.addElement("actor");
+				org.dom4j.Element actName = actEle.addElement("name");
+				actName.setText(actorName);
+				org.dom4j.Element actType = actEle.addElement("type");
+				actType.setText("Actor");
+				//6.设置输出流来生成一个xml文件
+				OutputStream os = new FileOutputStream(file);
+				//Format格式输出格式刷
+				OutputFormat format = OutputFormat.createPrettyPrint();
+				//设置xml编码
+				format.setEncoding("utf-8");
+		 
+				//写：传递两个参数一个为输出流表示生成xml文件在哪里
+				//另一个参数表示设置xml的格式
+				XMLWriter xw = new XMLWriter(os,format);
+				//将组合好的xml封装到已经创建好的document对象中，写出真实存在的xml文件中
+				xw.write(document);
+				//清空缓存关闭资源
+				xw.flush();
+				xw.close();
+			}
+		}
+	}
+	
+	@Override
+	public List<Movie> generateConfig(String usedSite) throws IOException {
 		//所有文件名
 		String[] names = new File(ConfigStatic.config.getTempMediaDir()).list();
 		//用来保存可识别影片信息
@@ -41,7 +83,7 @@ public class MainServiceImpl implements MainService {
 			movie.setOriginalName(name);
 			movie.setNewName(name);
 			movie.setSorttitle(name.substring(0, name.lastIndexOf(".")));
-			movie.setWebSite(ConfigStatic.javBusSite + name.substring(0, name.lastIndexOf(".")));
+			setWebSite(movie, usedSite, name.substring(0, name.lastIndexOf(".")));
 			movieList.add(movie);
 		}
 		XmlHandler.generateMovies(movieList, ConfigStatic.tempRootPath, ConfigStatic.moviesXmlName, true);
@@ -49,7 +91,7 @@ public class MainServiceImpl implements MainService {
 	}
 	
 	@Override
-	public List<Movie> generateRenameConfig() throws IOException {
+	public List<Movie> generateRenameConfig(String usedRule, String usedSite) throws IOException {
 		//所有文件名
 		String[] names = new File(ConfigStatic.config.getTempMediaDir()).list();
 		//用来保存可识别影片信息
@@ -60,16 +102,20 @@ public class MainServiceImpl implements MainService {
 		Map<String, Movie> map = new HashMap<String, Movie>();
 
 		// 番号正则
-		String nameRegEx = "[a-z]+[0-9]+";
-		String numRegEx = "[0-9]+";
+		String nameRegEx = null;
+		if ("rule1".equals(usedRule)) {
+			nameRegEx = "[a-z]+[0-9]+";
+		}else if ("rule2".equals(usedRule)) {
+			nameRegEx = "[0-9]+[a-z]+[0-9]+";
+		}else {
+			throw new RuntimeException("重命名规则前后台对不上");
+		}
 
 		// 忽略大小写的写法
 		Pattern namePattern = Pattern.compile(nameRegEx, Pattern.CASE_INSENSITIVE);
-		Pattern numPattern = Pattern.compile(numRegEx, Pattern.CASE_INSENSITIVE);
 		
 		//循环使用的临时变量
 		Matcher nameMat = null;
-		Matcher numMat = null;
 		Movie movie = null;
 		String movieExtName = null;
 		// 根据正则生成新文件名
@@ -82,30 +128,22 @@ public class MainServiceImpl implements MainService {
 			nameMat = namePattern.matcher(name.replaceAll("-", ""));
 			// 影片名可以识别
 			if (nameMat.find()) {
-				// 排除掉番号数字前面的0
 				String matString = nameMat.group();
-				numMat = numPattern.matcher(matString);
-				//必然成立，group前必须执行，否则报错
-				numMat.find();
-				String num = numMat.group();
-				String actualNum = num;
-				if (num.length() >= 5) {
-					if (actualNum.indexOf("0") == 0) {
-						actualNum = actualNum.substring(1);
-					}
-					if (actualNum.indexOf("0") == 0) {
-						actualNum = actualNum.substring(1);
-					}
-				}
+				// 排除掉番号数字前面的0
+				String[] nums = matString.split("[a-zA-Z]+");
+				String lastnum = nums[1];
 				// 没有0或数字个数不为5的，不做特殊处理
-				String shortName = (matString.replace(num, "") + "-" + actualNum).toUpperCase();
+				while (lastnum.length() > 3 && lastnum.indexOf("0") == 0) {
+					lastnum = lastnum.substring(1);
+				}
+				String shortName = nums[0] + (matString.replaceAll("[0-9]*", "") + "-" + lastnum).toUpperCase();
 				
 				//处理一个电影多个文件的情况
 				Movie parentMovie = map.get(shortName);
 				if(parentMovie == null){
 					map.put(shortName, movie);
 					movie.setSorttitle(shortName);
-					movie.setWebSite(ConfigStatic.javBusSite + shortName);
+					setWebSite(movie, usedSite, shortName);
 					movie.setNewName(shortName + "." + movieExtName);
 					movieList.add(movie);
 				}else{
@@ -132,6 +170,16 @@ public class MainServiceImpl implements MainService {
 		return movieList;
 	}
 
+	private void setWebSite(Movie movie, String usedSite, String shortName) {
+		if ("javbus".equals(usedSite)) {
+			movie.setWebSite(ConfigStatic.javBusSite + shortName);
+		}else if ("mgstage".equals(usedSite)) {
+			movie.setWebSite(ConfigStatic.mgstageSite + shortName);
+		}else {
+			throw new RuntimeException("刮削选项前后台对不上");
+		}
+	}
+	
 	@Override
 	public void synchronizeNewName(List<Movie> movies) throws Exception {
 		List<Movie> movieList = XmlHandler.readMovies(ConfigStatic.tempRootPath, ConfigStatic.moviesXmlName);
@@ -162,9 +210,17 @@ public class MainServiceImpl implements MainService {
 				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 		CopyOnWriteArrayList<Movie> movieListForSite = new CopyOnWriteArrayList<Movie>();
 		CopyOnWriteArrayList<Movie> errorMovieListForSite = new CopyOnWriteArrayList<Movie>();
-		GetMovieMsgTask getMovieMsgTask = null;
+		Runnable getMovieMsgTask = null;
 		for (Movie movie : movieList) {
-			getMovieMsgTask = new GetMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
+			// 没有网址的不处理
+			if (StringUtils.isBlank(movie.getWebSite())) {
+				errorMovieListForSite.add(movie);
+				continue;
+			}else if (movie.getWebSite().contains(ConfigStatic.javBusSite)) {
+				getMovieMsgTask = new GetJavBusMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
+			}else if (movie.getWebSite().contains(ConfigStatic.mgstageSite)) {
+				getMovieMsgTask = new GetMgstageMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
+			}
 			executor.execute(getMovieMsgTask);
 		}
 		executor.shutdown();

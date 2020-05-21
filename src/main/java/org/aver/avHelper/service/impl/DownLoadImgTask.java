@@ -117,7 +117,11 @@ public class DownLoadImgTask implements Runnable {
 		tempEle = movieEle.addElement("lockdata");
 		tempEle.setText("true");
 		tempEle = movieEle.addElement("title");
-		tempEle.setText(movie.getTitle());
+		if (StringUtils.startsWithIgnoreCase(movie.getTitle(), movie.getSorttitle())) {
+			tempEle.setText(movie.getTitle());
+		}else {
+			tempEle.setText(movie.getSorttitle() + " " + movie.getTitle());
+		}
 		tempEle = movieEle.addElement("sorttitle");
 		tempEle.setText(movie.getSorttitle());
 		if(StringUtils.isNotBlank(movie.getDirector())){
@@ -168,7 +172,7 @@ public class DownLoadImgTask implements Runnable {
 			String infoPath = movieDirPath + "/" + infoName + ".nfo";
 			writer = new XMLWriter(new FileOutputStream(infoPath), format);
 			// 设置是否转义。默认true，代表转义
-			writer.setEscapeText(false);
+//			writer.setEscapeText(false);
 			writer.write(document);
 		}catch(IOException e){
 			e.printStackTrace();
@@ -242,8 +246,9 @@ public class DownLoadImgTask implements Runnable {
 			int[] posterSize = ImageUtil.getImageSize(posterFile);
 			
 			// 切割fanart图片，生成poster图片
-			if (fanartSize != null && posterSize != null) {
-				//小图又白边，宽度减6或减7
+			if (fanartSize != null && posterSize != null 
+					&& movie.getPosterNeedCut() != null && movie.getPosterNeedCut()) {
+				//小图有白边，宽度减6或减7
 				int posterWidth = fanartSize[1] * (posterSize[0] - 6) / posterSize[1];
 				ImageUtil.cutImage(fanartFile.getAbsolutePath(), posterFile.getAbsolutePath(),
 						fanartSize[0] - posterWidth, 0, fanartSize[0], fanartSize[1]);
