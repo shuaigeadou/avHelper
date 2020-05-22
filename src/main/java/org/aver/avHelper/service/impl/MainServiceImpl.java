@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aver.avHelper.service.MainService;
 import org.aver.avHelper.utils.HtmlDownload;
@@ -175,6 +176,36 @@ public class MainServiceImpl implements MainService {
 			movie.setWebSite(ConfigStatic.javBusSite + shortName);
 		}else if ("mgstage".equals(usedSite)) {
 			movie.setWebSite(ConfigStatic.mgstageSite + shortName);
+		}else if ("fanza".equals(usedSite)) {
+			String searchSite = ConfigStatic.fanzaSearchSite + shortName.replaceAll("-", "");
+			Document document = HtmlDownload.getDocBySite(searchSite, null);
+			Element listEle = document.selectFirst("#list");
+			//查询到影片
+			if (listEle != null) {
+				List<String> sites = null;
+				try {
+					sites = FileUtils.readLines(new File("./fanza优先选择.txt"), "utf-8");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				//没有优先地址时直接使用列表中的第一个
+				String link = listEle.selectFirst("li").selectFirst("a").attr("href");
+				if (sites != null && sites.size() > 0) {
+					Iterator<Element> liIt = listEle.select(">li").iterator();
+					boolean flag = true;
+					while (liIt.hasNext() && flag) {
+						String curLink = liIt.next().selectFirst("a").attr("href");
+						for (String site : sites) {
+							if (StringUtils.startsWithIgnoreCase(curLink, site)) {
+								link = curLink;
+								flag = false;
+								break;
+							}
+						}
+					}
+				}
+				movie.setWebSite(link.split("\\?")[0]);
+			}
 		}else {
 			throw new RuntimeException("刮削选项前后台对不上");
 		}
@@ -220,6 +251,8 @@ public class MainServiceImpl implements MainService {
 				getMovieMsgTask = new GetJavBusMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
 			}else if (movie.getWebSite().contains(ConfigStatic.mgstageSite)) {
 				getMovieMsgTask = new GetMgstageMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
+			}else if (movie.getWebSite().contains(ConfigStatic.fanzaSite)) {
+				getMovieMsgTask = new GetFanzaMovieMsgTask(movie, movieListForSite, errorMovieListForSite);
 			}
 			executor.execute(getMovieMsgTask);
 		}

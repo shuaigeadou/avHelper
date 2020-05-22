@@ -3,10 +3,12 @@ package org.aver.avHelper.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import org.aver.avHelper.vo.ConfigStatic;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -75,7 +77,18 @@ public class HtmlDownload {
 	 * @return
 	 */
 	public static Document getDocBySite(String webSite, Map<String, String> properties) {
-		String htmlString = HttpClientUtil.getWithProxy(webSite, properties, "utf-8");
+		byte[] bs = HttpClientUtil.getWithProxy(webSite, properties);
+		String htmlString = null;
+		try {
+			htmlString = new String(bs, "utf-8");
+			if (webSite.contains(ConfigStatic.fanzaSite)) {
+				String s1 = htmlString.split("charset=", 2)[1];
+				String charset = s1.substring(0, s1.indexOf("\""));
+				htmlString = new String(bs, charset);
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		Document document = Jsoup.parse(htmlString);
 		return document;
 	}

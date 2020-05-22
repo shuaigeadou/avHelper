@@ -16,6 +16,10 @@ public class ConfigStatic {
 	public static final String javBusSite = "https://www.javbus.com/";
 	/** mgstage影片信息下载地址 */
 	public static final String mgstageSite = "https://www.mgstage.com/product/product_detail/";
+	/** fanza地址*/
+	public static final String fanzaSite = "https://www.dmm.co.jp";
+	/** fanza搜索地址，网站的编号没找到规律，所以影片地址要先搜一下*/
+	public static final String fanzaSearchSite = fanzaSite + "/search/=/searchstr=";
 	/** 保存影片信息的目录 */
 	public static final String tempRootPath = "./temp/";
 	/** 影片信息XML文件 */
