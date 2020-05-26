@@ -141,19 +141,22 @@ public class GetFanzaMovieMsgTask implements Runnable {
 		}
 		
 		//影片截图
-		Elements imgBlock = document.selectFirst("#sample-image-block").select("[name=sample-image]");
-		if (imgBlock.size() > 0) {
-			Iterator<Element> picIt = imgBlock.iterator();
-			List<String> samplePicList = new ArrayList<String>();
-			while (picIt.hasNext()) {
-				String picSite = picIt.next().selectFirst("img").attr("src");
-				if (picSite.indexOf("js-") > 0) {
-					samplePicList.add(picSite.replace("js-", "jp-"));
-				}else {
-					samplePicList.add(picSite.replace("-", "jp-"));
+		Element imgeBlock = document.selectFirst("#sample-image-block");
+		if (imgeBlock != null) {
+			Elements imgBlock = imgeBlock.select("[name=sample-image]");
+			if (imgBlock.size() > 0) {
+				Iterator<Element> picIt = imgBlock.iterator();
+				List<String> samplePicList = new ArrayList<String>();
+				while (picIt.hasNext()) {
+					String picSite = picIt.next().selectFirst("img").attr("src");
+					if (picSite.indexOf("js-") > 0) {
+						samplePicList.add(picSite.replace("js-", "jp-"));
+					}else {
+						samplePicList.add(picSite.replace("-", "jp-"));
+					}
 				}
+				movie.setFanartsPicSite(samplePicList);
 			}
-			movie.setFanartsPicSite(samplePicList);
 		}
 		
 		movieList.add(movie);
