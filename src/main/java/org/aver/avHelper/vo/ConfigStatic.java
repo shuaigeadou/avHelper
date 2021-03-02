@@ -66,6 +66,7 @@ public class ConfigStatic {
 		if(!file.exists()) return new Config();
 		
 		XStream xStream = new XStream();
+		xStream.setClassLoader(Config.class.getClassLoader());
 		InputStreamReader isr = null;
 		Config config = new Config();
 		try {

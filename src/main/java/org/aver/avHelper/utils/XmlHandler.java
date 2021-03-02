@@ -122,6 +122,7 @@ public class XmlHandler {
 		if(!sourceFile.exists()) return null;
 		
 		XStream xStream = new XStream();
+		xStream.setClassLoader(Movie.class.getClassLoader());
 		InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile), "utf-8");
 		List<Movie> movieList = (List<Movie>) xStream.fromXML(isr);
 		isr.close();
