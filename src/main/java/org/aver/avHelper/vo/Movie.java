@@ -18,7 +18,7 @@ public class Movie {
 	/** 标题 */
 	String title;
 
-	/** 短标题 */
+	/** 短标题，emby中是类标题，程序里还作短标题用，生成nfo时赋值给原文件名节点 */
 	String sorttitle;
 
 	/** 导演 */

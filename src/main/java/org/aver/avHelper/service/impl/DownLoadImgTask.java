@@ -122,8 +122,8 @@ public class DownLoadImgTask implements Runnable {
 		}else {
 			tempEle.setText(movie.getSorttitle() + " " + movie.getTitle());
 		}
-		tempEle = movieEle.addElement("sorttitle");
-		tempEle.setText(movie.getSorttitle());
+		tempEle = movieEle.addElement("originaltitle");
+		tempEle.setText(movie.getSorttitle().replaceAll("-", ""));
 		if(StringUtils.isNotBlank(movie.getDirector())){
 			tempEle = movieEle.addElement("director");
 			tempEle.setText(movie.getDirector());
