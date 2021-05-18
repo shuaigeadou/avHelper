@@ -1,8 +1,10 @@
 package org.aver.avHelper.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +29,9 @@ public class GetFanzaMovieMsgTask implements Runnable {
 
 	@Override
 	public void run() {
-		Document document = HtmlDownload.getDocBySite(movie.getWebSite(), null);
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put("cookie", "age_check_done=1");
+		Document document = HtmlDownload.getDocBySite(movie.getWebSite(), properties);
 
 		//没有查到影片信息
 		if(document.select(".page-detail").size() == 0){

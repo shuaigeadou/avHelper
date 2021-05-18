@@ -101,6 +101,8 @@ public class DownLoadImgTask implements Runnable {
 		}else{
 			actorDirName = "多人";
 		}
+		//替换特殊字符
+		actorDirName = actorDirName.replaceAll("[/\\\\:*?<>|]","");
 		File actorDir = new File(desDir + "/" + actorDirName);
 		if(!actorDir.exists()){
 			this.makeDir(actorDir);
