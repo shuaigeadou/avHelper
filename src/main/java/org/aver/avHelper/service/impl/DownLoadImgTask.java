@@ -27,6 +27,7 @@ public class DownLoadImgTask implements Runnable {
 	private Movie movie;
 	private int threadSize;
 	private String desDir;
+	private String webDomain;
 	
 	/**
 	 * 下载图片并移动文件
@@ -37,6 +38,8 @@ public class DownLoadImgTask implements Runnable {
 		this.movie = movie;
 		this.threadSize = threadSize;
 		this.desDir = desDir;
+		String[] split = movie.getWebSite().split("/");
+		this.webDomain = split[0] + "//" + split[2];
 	}
 
 	@Override
@@ -237,13 +240,13 @@ public class DownLoadImgTask implements Runnable {
 		String tempLocalPath = movieDirPath + "/fanart" + tempExtName;
 		File fanartFile = new File(tempLocalPath);
 		if(neededToDownload(fanartFile)){
-			ImageDownload.downloadByProxy(tempPicSite, tempLocalPath);
+			ImageDownload.downloadByProxy(getAbsoluteSite(tempPicSite), tempLocalPath);
 			int[] fanartSize = ImageUtil.getImageSize(fanartFile);
 			
 			tempPicSite = movie.getSmallPosterPicSite();
 			tempExtName = tempPicSite.substring(tempPicSite.lastIndexOf("."));
 			tempLocalPath = movieDirPath + "/poster" + tempExtName;
-			ImageDownload.downloadByProxy(tempPicSite, tempLocalPath);
+			ImageDownload.downloadByProxy(getAbsoluteSite(tempPicSite), tempLocalPath);
 			File posterFile = new File(tempLocalPath);
 			int[] posterSize = ImageUtil.getImageSize(posterFile);
 			
@@ -282,7 +285,7 @@ public class DownLoadImgTask implements Runnable {
 					executor.execute(new Runnable() {
 						@Override
 						public void run() {
-							ImageDownload.downloadByProxy(finalSite, finalPath);
+							ImageDownload.downloadByProxy(getAbsoluteSite(finalSite), finalPath);
 						}
 					});
 				}
@@ -305,6 +308,19 @@ public class DownLoadImgTask implements Runnable {
 			
 	}
 
+	/**
+	 * 获取网址绝对路径，有些链接不带域名
+	 * @param site
+	 * @return
+	 */
+	private String getAbsoluteSite(String site) {
+		if (site.toLowerCase().startsWith("http")) {
+			return site;
+		}else {
+			return webDomain + site;
+		}
+	}
+	
 	/**
 	 * 创建文件夹
 	 * @param file
